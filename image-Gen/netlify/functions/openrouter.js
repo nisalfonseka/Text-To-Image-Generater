@@ -14,9 +14,22 @@ exports.handler = async function(event) {
       method: "POST",
       headers: {
         "Authorization": `Bearer ${OPENROUTER_API_KEY}`,
+        "HTTP-Referer": "https://ai-imagegenerater.netlify.app", // Replace with your site URL
+        "X-Title": "AI Image Generater", // Replace with your site name
         "Content-Type": "application/json"
       },
-      body: JSON.stringify(body)
+      body: JSON.stringify({
+        model: "mistralai/mistral-small-3.2-24b-instruct:free",
+        messages: [
+          {
+            role: "user",
+            content: [
+              { type: "text", text: "What is in this image?" },
+              { type: "image_url", image_url: { url: "https://upload.wikimedia.org/wikipedia/commons/thumb/d/dd/Gfp-wisconsin-madison-the-nature-boardwalk.jpg/2560px-Gfp-wisconsin-madison-the-nature-boardwalk.jpg" } }
+            ]
+          }
+        ]
+      })
     });
 
     if (!response.ok) {
