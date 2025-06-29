@@ -10,12 +10,15 @@ exports.handler = async function(event) {
       };
     }
 
+    const controller = new AbortController();
+    const timeout = setTimeout(() => controller.abort(), 9000); // 9 seconds
+
     const response = await fetch("https://openrouter.ai/api/v1/chat/completions", {
       method: "POST",
       headers: {
         "Authorization": `Bearer ${OPENROUTER_API_KEY}`,
-        "HTTP-Referer": "https://ai-imagegenerater.netlify.app", // Replace with your site URL
-        "X-Title": "AI Image Generater", // Replace with your site name
+        "HTTP-Referer": "https://ai-imagegenerater.netlify.app",
+        "X-Title": "AI Image Generater",
         "Content-Type": "application/json"
       },
       body: JSON.stringify({
@@ -29,8 +32,10 @@ exports.handler = async function(event) {
             ]
           }
         ]
-      })
+      }),
+      signal: controller.signal
     });
+    clearTimeout(timeout);
 
     if (!response.ok) {
       const errorText = await response.text();
