@@ -147,12 +147,15 @@ function App() {
             </div>
 
             {/* Input Form */}
-            <form onSubmit={handleSubmit} className="flex items-center gap-4">
+            <form
+              onSubmit={handleSubmit}
+              className="flex items-center gap-4 flex-wrap sm:flex-nowrap"
+            >
               <textarea
                 id="prompt"
                 value={prompt}
                 onChange={(e) => setPrompt(e.target.value)}
-                className="flex-1 px-3 py-3 rounded-xl bg-white/20 border border-white/30 text-white placeholder-white/50 focus:outline-none focus:ring-1 focus:ring-white/50 resize-none"
+                className="flex-1 px-3 py-3 rounded-xl bg-white/20 border border-white/30 text-white placeholder-white/50 focus:outline-none focus:ring-1 focus:ring-white/50 resize-none min-w-[180px]"
                 rows="1"
                 placeholder="A futuristic city with neon lights and flying cars..."
                 required
@@ -161,7 +164,7 @@ function App() {
               <button
                 type="submit"
                 disabled={loading}
-                className="flex items-center justify-center gap-2 py-3 px-6 bg-black hover:bg-gray-800 text-white rounded-xl font-semibold text-lg transition-all duration-200 disabled:opacity-50"
+                className="flex items-center justify-center gap-2 py-3 px-6 bg-black hover:bg-gray-800 text-white rounded-xl font-semibold text-lg transition-all duration-200 disabled:opacity-50 w-full sm:w-auto mt-4 sm:mt-0"
               >
                 {loading ? (
                   <>
@@ -195,6 +198,12 @@ function App() {
                 )}
               </button>
             </form>
+            <style>{`
+              @media (max-width: 640px) {
+                form.flex { flex-direction: column !important; align-items: stretch !important; }
+                form.flex button { width: 100% !important; margin-top: 1rem !important; }
+              }
+            `}</style>
 
             {/* Error Message */}
             {error && (
@@ -205,21 +214,52 @@ function App() {
 
             {/* Generated Image */}
             {image && (
-              <div className="mt-8 p-6 bg-white/10 backdrop-blur-lg rounded-2xl shadow-2xl">
-                <img
-                  src={image}
-                  alt="Generated artwork"
-                  className="w-full rounded-lg shadow-lg mb-4"
-                  onError={() => setError('Failed to load the generated image')}
-                />
-                <button
-                  onClick={handleDownload}
-                  className="w-full flex items-center justify-center gap-2 py-3 px-6 bg-black hover:bg-gray-600 text-white rounded-xl font-semibold transition-all duration-200"
-                >
-                  <Download className="w-5 h-5" />
-                  Download Image
-                </button>
-              </div>
+              <div className="mt-10 flex flex-col items-center justify-center">
+    <div className="relative group rounded-3xl p-[2px] bg-gradient-to-tr from-pink-500 via-blue-500 to-purple-500 shadow-2xl transition-all duration-300 hover:scale-105 w-full max-w-lg sm:max-w-md xs:max-w-full">
+      <div className="rounded-3xl bg-white/10 backdrop-blur-xl p-6 flex flex-col items-center w-full animate-float">
+        <img
+          src={image}
+          alt="Generated artwork"
+          className="rounded-2xl shadow-xl w-full object-cover border-4 border-white/20 group-hover:shadow-pink-500/30 transition-all duration-300 max-h-[400px] sm:max-h-[300px] xs:max-h-[200px]"
+          onError={() => setError('Failed to load the generated image')}
+        />
+        <button
+          onClick={handleDownload}
+          className="mt-6 flex items-center gap-3 px-7 py-3 bg-gradient-to-r from-pink-600 via-blue-600 to-purple-600 text-white font-bold rounded-xl shadow-lg hover:from-pink-500 hover:to-purple-500 hover:scale-105 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-pink-400 w-full sm:w-auto text-base sm:text-sm"
+        >
+          <Download className="w-6 h-6" />
+          <span className="hidden xs:inline">Download Image</span>
+          <span className="inline xs:hidden">Download</span>
+        </button>
+      </div>
+      {/* Glow effect */}
+      <div className="absolute -inset-1 rounded-3xl blur-2xl opacity-60 group-hover:opacity-80 transition-all duration-300 bg-gradient-to-tr from-pink-400 via-blue-400 to-purple-400 z-[-1]" />
+    </div>
+    <style>{`
+      @keyframes float {
+        0% { transform: translateY(0px);}
+        50% { transform: translateY(-10px);}
+        100% { transform: translateY(0px);}
+      }
+      .animate-float {
+        animation: float 4s ease-in-out infinite;
+      }
+      @media (max-width: 640px) {
+        .max-w-lg { max-width: 100% !important; }
+        .p-6 { padding: 1rem !important; }
+        .rounded-3xl { border-radius: 1.25rem !important; }
+        .max-h-[400px] { max-height: 200px !important; }
+      }
+      @media (max-width: 400px) {
+        .p-6 { padding: 0.5rem !important; }
+        .rounded-3xl { border-radius: 0.75rem !important; }
+        .max-h-[400px] { max-height: 120px !important; }
+        .px-7 { padding-left: 1rem !important; padding-right: 1rem !important; }
+        .py-3 { padding-top: 0.5rem !important; padding-bottom: 0.5rem !important; }
+        .text-base { font-size: 0.9rem !important; }
+      }
+    `}</style>
+  </div>
             )}
           </div>
         </div>
